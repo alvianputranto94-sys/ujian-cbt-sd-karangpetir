@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>CBT TKA Matematika SD 2026</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .soal { margin-bottom: 20px; display: none; }
+        .soal.active { display: block; }
+        .btn { padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        .btn:disabled { background: #ccc; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Ujian TKA Matematika SD 2026</h2>
+    <hr>
+    <div id="quiz-container">Loading soal...</div>
+    <div style="margin-top: 20px;">
+        <button id="prevBtn" class="btn" onclick="navigasi(-1)" disabled>Sebelumnya</button>
+        <button id="nextBtn" class="btn" onclick="navigasi(1)">Selanjutnya</button>
+        <button id="submitBtn" class="btn" style="background: green; display:none;" onclick="hitungSkor()">Kirim Jawaban</button>
+    </div>
+</div>
+
+<script>
+    let dataSoal = [];
+    let currentStep = 0;
+    let jawabanUser = {};
+
+    // Mengambil data dari JSON
+    fetch('soal.json')
+        .then(res => res.json())
+        .then(data => {
+            dataSoal = data;
+            renderSoal();
+        });
+
+    function renderSoal() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = dataSoal.map((s, index) => `
+            <div class="soal ${index === 0 ? 'active' : ''}" id="soal-${index}">
+                <p><strong>Soal ${index + 1}:</strong> ${s.pertanyaan}</p>
+                ${s.opsi.map(o => `
+                    <label style="display:block; margin: 5px 0;">
+                        <input type="${s.tipe === 'kompleks' ? 'checkbox' : 'radio'}" 
+                               name="q${index}" value="${o}" 
+                               onchange="simpanJawaban(${index}, '${o}', '${s.tipe}')"> ${o}
+                    </label>
+                `).join('')}
+            </div>
+        `).join('');
+    }
+
+    function simpanJawaban(index, value, tipe) {
+        if (tipe === 'pilihan_ganda') {
+            jawabanUser[index] = value;
+        } else {
+            if (!jawabanUser[index]) jawabanUser[index] = [];
+            const idx = jawabanUser[index].indexOf(value);
+            if (idx > -1) jawabanUser[index].splice(idx, 1);
+            else jawabanUser[index].push(value);
+        }
+    }
+
+    function navigasi(step) {
+        document.getElementById(`soal-${currentStep}`).classList.remove('active');
+        currentStep += step;
+        document.getElementById(`soal-${currentStep}`).classList.add('active');
+        
+        document.getElementById('prevBtn').disabled = currentStep === 0;
+        if (currentStep === dataSoal.length - 1) {
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+        } else {
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'none';
+        }
+    }
+
+    function hitungSkor() {
+        let benar = 0;
+        dataSoal.forEach((s, i) => {
+            if (s.tipe === 'pilihan_ganda') {
+                if (jawabanUser[i] === s.jawaban) benar++;
+            } else {
+                const jwb = jawabanUser[i] || [];
+                if (JSON.stringify(jwb.sort()) === JSON.stringify(s.jawaban.sort())) benar++;
+            }
+        });
+        alert(`Ujian Selesai! Skor Anda: ${(benar / dataSoal.length * 100).toFixed(0)}`);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "tipe": "pilihan_ganda",
+    "pertanyaan": "Sebuah bak mandi berbentuk balok dengan panjang 80 cm, lebar 50 cm, dan tinggi 60 cm. Jika bak tersebut sudah terisi air sebanyak 1/4 bagian, berapa liter air yang dibutuhkan untuk mengisi bak hingga penuh?",
+    "opsi": ["60 Liter", "120 Liter", "180 Liter", "240 Liter"],
+    "jawaban": "180 Liter"
+  },
+  {
+    "id": 2,
+    "tipe": "kompleks",
+    "pertanyaan": "Perhatikan bilangan berikut: 0,75 ; 4/5 ; 70% ; 0,85. Manakah pernyataan yang benar? (Pilih lebih dari satu)",
+    "opsi": [
+      "0,85 adalah bilangan terbesar",
+      "70% lebih kecil dari 4/5",
+      "Jika diurutkan dari terkecil: 70%, 0,75, 4/5, 0,85",
+      "4/5 sama nilainya dengan 0,75"
+    ],
+    "jawaban": ["0,85 adalah bilangan terbesar", "70% lebih kecil dari 4/5", "Jika diurutkan dari terkecil: 70%, 0,75, 4/5, 0,85"]
+  }
+]
